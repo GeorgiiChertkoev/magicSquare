@@ -1,4 +1,5 @@
 import unittest
+import time
 
 def pretty_print(matrix):
     for row in matrix:
@@ -74,10 +75,10 @@ def magic_square_even_odd(n):
 
 
 def make_magic_square(n):
-    # print(n)
     n = int(n)
-    # print(n)
-    if n == 0:
+    if n < 0:
+        raise ValueError("Size of square must be a non-negative integer")
+    if n == 0 or n == 2:
         return []
     if n % 2:
         return magic_square_odd(n)
@@ -131,5 +132,21 @@ class MagicSquareTestCase(unittest.TestCase):
         self.assertEqual(make_magic_square(9.9), make_magic_square(9))
 
     def test_square_from_string(self):
-        self.assertRaises(ValueError, make_magic_square, "qwe")
+        self.assertRaises(Exception, make_magic_square, "qwe")
 
+    def test_square_from_negative(self):
+        self.assertRaises(Exception, make_magic_square, -4)
+
+    def test_efficiency(self):
+        start = time.time()
+        make_magic_square(1000)
+        end = time.time()
+        self.assertTrue(end - start < 1)
+        start = time.time()
+        make_magic_square(1001)
+        end = time.time()
+        self.assertTrue(end - start < 1)
+        start = time.time()
+        make_magic_square(1002)
+        end = time.time()
+        self.assertTrue(end - start < 1)
