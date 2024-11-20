@@ -1,23 +1,8 @@
+import unittest
+
 def pretty_print(matrix):
     for row in matrix:
         print(*row, sep='\t')
-
-
-def check_if_magic(matrix):
-    t_matrix = list(zip(*matrix))
-    s = sum(matrix[0])
-    n = len(matrix)
-    flag = True
-    for i in range(n):
-        if (
-            sum(matrix[i]) != s
-            or sum(t_matrix[i]) != s
-            or sum(matrix[i][i] for i in range(n)) != s
-            or sum(matrix[i][-(i + 1)] for i in range(n)) != s
-        ):
-            flag = False
-            break
-    return flag
 
 
 def magic_square_odd(n):
@@ -89,6 +74,11 @@ def magic_square_even_odd(n):
 
 
 def make_magic_square(n):
+    # print(n)
+    n = int(n)
+    # print(n)
+    if n == 0:
+        return []
     if n % 2:
         return magic_square_odd(n)
     elif n % 4 == 2:
@@ -100,3 +90,46 @@ def make_magic_square(n):
 if __name__ == '__main__':
     n = int(input())
     pretty_print(make_magic_square(n))
+
+
+def is_magic_square(matrix):
+    t_matrix = list(zip(*matrix))
+    s = sum(matrix[0])
+    n = len(matrix)
+    flag = True
+    for i in range(n):
+        if (
+            sum(matrix[i]) != s
+            or sum(t_matrix[i]) != s
+            or sum(matrix[i][i] for i in range(n)) != s
+            or sum(matrix[i][-(i + 1)] for i in range(n)) != s
+        ):
+            flag = False
+            break
+    return flag
+
+
+class MagicSquareTestCase(unittest.TestCase):
+    def test_odd_squares(self):
+        for i in range(1, 100, 2):
+            self.assertTrue(is_magic_square(make_magic_square(i)))
+
+    def test_even_even_squares(self):
+        for i in range(4, 100, 4):
+            self.assertTrue(is_magic_square(make_magic_square(i)))
+
+    def test_even_odd_squares(self):
+        for i in range(6, 100, 4):
+            # magic square with size 2 doesn't exist 
+            self.assertTrue(is_magic_square(make_magic_square(i)))
+
+    def test_zero_size_square(self):
+        self.assertEqual(make_magic_square(0), [])
+
+    def test_float_size_square(self):
+        self.assertEqual(make_magic_square(3.3), make_magic_square(3))
+        self.assertEqual(make_magic_square(9.9), make_magic_square(9))
+
+    def test_square_from_string(self):
+        self.assertRaises(ValueError, make_magic_square, "qwe")
+
